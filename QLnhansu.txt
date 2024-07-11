@@ -1,0 +1,165 @@
+-- Tạo database QLnhansu nếu chưa tồn tại và sử dụng nó
+CREATE DATABASE IF NOT EXISTS QLnhansu;
+USE QLnhansu;
+
+-- Tạo bảng Department
+CREATE TABLE IF NOT EXISTS Department (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Tạo bảng JobPosition
+CREATE TABLE IF NOT EXISTS JobPosition (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Tạo bảng Employee
+CREATE TABLE IF NOT EXISTS Employee (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    contractTerm DATE,
+    department_id INT,
+    position_id INT,
+    FOREIGN KEY (department_id) REFERENCES Department(id),
+    FOREIGN KEY (position_id) REFERENCES JobPosition(id)
+);
+
+-- Tạo bảng Attendance
+CREATE TABLE IF NOT EXISTS Attendance (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,
+    date DATE,
+    workday VARCHAR(200),
+    check_in_time TIME,
+    check_out_time TIME,
+    FOREIGN KEY (employee_id) REFERENCES Employee(id)
+);
+
+-- Tạo bảng User
+CREATE TABLE IF NOT EXISTS User (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    password VARCHAR(255),
+    email VARCHAR(100),
+    created_by VARCHAR(50),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_by VARCHAR(50),
+    modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tạo bảng Role
+CREATE TABLE IF NOT EXISTS Role (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    code VARCHAR(50),
+    deleted BOOLEAN DEFAULT false,
+    created_by VARCHAR(50),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_by VARCHAR(50),
+    modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tạo bảng UserRole
+CREATE TABLE IF NOT EXISTS UserRole (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    deleted BOOLEAN DEFAULT false,
+    created_by VARCHAR(50),
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    modified_by VARCHAR(50),
+    modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES User(id),
+    FOREIGN KEY (role_id) REFERENCES Role(id)
+);
+
+-- Tạo bảng Salary
+CREATE TABLE IF NOT EXISTS Salary (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,
+    salary_amount DECIMAL(10,2),
+    start_date DATE,
+    end_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES Employee(id)
+);
+
+-- Tạo bảng LeaveRequest
+CREATE TABLE IF NOT EXISTS LeaveRequest (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,
+    start_date DATE,
+    end_date DATE,
+    reason TEXT,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    FOREIGN KEY (employee_id) REFERENCES Employee(id)
+);
+
+-- Tạo bảng TrainingSession
+CREATE TABLE IF NOT EXISTS TrainingSession (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    date DATE,
+    location VARCHAR(255)
+);
+
+-- Tạo bảng EmployeeTraining
+CREATE TABLE IF NOT EXISTS EmployeeTraining (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,
+    session_id INT,
+    completion_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES Employee(id),
+    FOREIGN KEY (session_id) REFERENCES TrainingSession(id)
+);
+
+-- Tạo bảng PerformanceReview
+CREATE TABLE IF NOT EXISTS PerformanceReview (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT,
+    reviewer_id INT,
+    date DATE,
+    comments TEXT,
+    FOREIGN KEY (employee_id) REFERENCES Employee(id),
+    FOREIGN KEY (reviewer_id) REFERENCES Employee(id)
+);
+-- Chèn dữ liệu mẫu vào bảng Department
+INSERT INTO Department (name) VALUES ('HR Department');
+
+-- Chèn dữ liệu mẫu vào bảng JobPosition
+INSERT INTO JobPosition (name) VALUES ('HR Manager');
+
+-- Chèn dữ liệu mẫu vào bảng Employee
+INSERT INTO Employee (full_name, email, phone, address, contractTerm, department_id, position_id) VALUES 
+('John Doe', 'john.doe@example.com', '123456789', '123 Main St, City, Country', '2024-01-01', 1, 1);
+
+-- Chèn dữ liệu mẫu vào bảng Attendance
+INSERT INTO Attendance (employee_id, date, workday, check_in_time, check_out_time) VALUES 
+(1, '2024-05-01', 'Full day', '08:00:00', '17:00:00');
+
+-- Chèn dữ liệu mẫu vào bảng User
+INSERT INTO User (username, password, email, created_by) VALUES 
+('admin', 'admin123', 'admin@example.com', 'System');
+
+-- Chèn dữ liệu mẫu vào bảng Role
+INSERT INTO Role (name, code, created_by) VALUES 
+('Admin', 'ADMIN', 'System');
+
+-- Chèn dữ liệu mẫu vào bảng UserRole
+INSERT INTO UserRole (user_id, role_id, created_by) VALUES 
+(1, 1, 'System');
+
+-- Chèn dữ liệu mẫu vào bảng Salary
+INSERT INTO Salary (employee_id, salary_amount, start_date, end_date) VALUES 
+(1, 5000.00, '2024-01-01', '2024-12-31');
+
+-- Chèn dữ liệu mẫu vào bảng LeaveRequest
+INSERT INTO LeaveRequest (employee_id, start_date, end_date, reason) VALUES 
+(1, '2024-05-10', '2024-05-12', 'Vacation');
+
+-- Chèn dữ liệu mẫu vào bảng TrainingSession
+INSERT INTO TrainingSession (name, date, location) VALUES 
+('Employee Orientation', '2024-06-01', 'Conference room A');
