@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "name": "Nguyễn Phúc Công",
+    "dateOfBirth": "2024-09-12",
+    "gender": "male",
+    "address": "phú diễn",
+    "phone": "0862077970"
+  },
+  {
+    "id": "2",
+    "name": "Tạ văn Đức",
+    "dateOfBirth": "2024-09-13",
+    "gender": "male",
+    "address": "phú diễn",
+    "phone": "0862077975"
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "1",
+    "className": "8A",
+    "dateTime": "2024-09-12T11:50",
+    "students": [
+      {
+        "id": "1",
+        "status": "late",
+        "note": "do mưa"
+      },
+      {
+        "id": "2",
+        "status": "present",
+        "note": ""
+      }
+    ]
+  }
+]
